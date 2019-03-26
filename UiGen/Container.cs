@@ -14,8 +14,9 @@ namespace UiGen
         //------------------------------------------------
         public void Print()
         {
-            Console.WriteLine("***************\n");
+            Console.WriteLine("\n***************\n");
             PrintRec(this, "");
+            Console.WriteLine("\n");
         }
 
         private void PrintRec(Container cont, String indent)

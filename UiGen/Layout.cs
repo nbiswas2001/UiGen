@@ -38,7 +38,7 @@ namespace UiGen
                 container.type = scanBy == ROW ? ContainerType.Column : ContainerType.Row;
             }
             
-            //PrintGrid("grid", grid);
+            PrintGrid("grid", grid);
 
             //find the lenght of border to scan. If scanBy is ROW, this is the
             //  no. of rows in grid, else for COL, the no. of columns
@@ -46,7 +46,8 @@ namespace UiGen
 
             //Check the rows for boundary lines. That splits up the space.
             var startRow = 0;
-            var hasCompartments = false;
+            var hasDivider = false;
+            var isLeaf = true;
             for (var i = 0; i < rowCount; i++)
             {
                 if (IsBoundaryLine(i, grid, scanBy)) //end of a compartment
@@ -58,7 +59,7 @@ namespace UiGen
                     {
                         Container child = new Container();
                         container.children.Add(child);
-
+ 
                         //PrintGrid("g", grid);
                         var sliced = Slice(grid, startRow + 1, i-1);
                         //PrintGrid("s", sliced);
@@ -66,26 +67,35 @@ namespace UiGen
                         //PrintGrid("t", transposed);
                         var newScanBy = scanBy == ROW ? COL : ROW;
                         ProcessRec(transposed, newScanBy, child);
-
-                        //only if there is a boundary in the middle
-                        if (i < rowCount - 1)
-                        {
-                            startRow = i; //new start pos
-                            hasCompartments = true;
-                        }
+                        isLeaf = false;
+                        startRow = i; //new start pos
+                        
+                        //if there is a boundary in the middle
+                        if (i < rowCount - 1) hasDivider = true;
                     }
                 }
 
             }
 
-            //if this does not have compartments i.e. it is either pure content or a column with content
-            if (!hasCompartments)
+            //if last divider row is missing - add the last compartment
+            if (hasDivider && !IsBoundaryLine(rowCount-1, grid, scanBy)) 
+            {
+                Container child = new Container();
+                container.children.Add(child);
+                var sliced = Slice(grid, startRow + 1, rowCount - 1);
+                var transposed = Transpose(sliced);
+                var newScanBy = scanBy == ROW ? COL : ROW;
+                ProcessRec(transposed, newScanBy, child);
+            }
+
+            //if this a leaf node i.e. it is either pure content 
+            if (isLeaf)
             { 
                 var contentContainer = new Container();
                 contentContainer.type = ContainerType.Content;
                 //PrintGrid("grid", grid);
                 var g = scanBy == ROW ? grid : Transpose(grid);
-                //PrintGrid("content", g);
+                PrintGrid("content", g);
                 contentContainer.content = GetContent(g);
                 container.children.Add(contentContainer);
             }
