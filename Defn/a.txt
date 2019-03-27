@@ -14,9 +14,9 @@
 
 
 ###
-
+name: abc
 layout:
-elements:
+contents:
   - id: AB
     type: field 
     defn: label='Name', width=20

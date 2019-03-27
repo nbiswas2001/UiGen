@@ -12,6 +12,7 @@ namespace UiGen
 
             var generator = new Generator();
             generator.outPath = @"C:\Dev\Code\MyProjects\NET\UiGen\Defn";
+            generator.fileExt = ".html";
             generator.ProcessDefn(def);
 
             Console.Read();

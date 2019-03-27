@@ -86,7 +86,7 @@ namespace UiGen
             { 
                 var contentCont = container.CreateChild(-1); //-1 -> type=Content
                 var g = scanBy == ROW ? grid : Transpose(grid);
-                contentCont.contentId = GetContent(g);
+                contentCont.contentId = GetContentId(g);
             }
         }
 
@@ -167,7 +167,7 @@ namespace UiGen
         }
 
         //----------------------------------
-        private String GetContent(char[,] grid)
+        private String GetContentId(char[,] grid)
         {
             var result = new StringBuilder();
             int rows = grid.GetLength(0);

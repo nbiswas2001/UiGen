@@ -13,7 +13,7 @@ namespace UiGen
         public List<ColWidthMarker> colWidthMarkers;
         public Container parent;
         public int columnWidth = -1;
-        public UiElement uiElement;
+        public Content content;
 
         //------------------------------------------------
         public void Print()
@@ -47,6 +47,16 @@ namespace UiGen
                     }
                 }
             }
+        }
+
+        //--------------------------------------
+        private static string rowTemplate = @"<div class=""form-row"">";
+        private static string colTemplate = @"<div class=""col-sm-@Model.colWidth"">";
+
+
+        public void Render(GeneratorContext ctx)
+        {
+            throw new NotImplementedException();
         }
 
         //-------------------------------------

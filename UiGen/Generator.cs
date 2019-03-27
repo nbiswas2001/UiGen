@@ -8,35 +8,43 @@ namespace UiGen
     class Generator
     {
         public string outPath;
+        public string fileExt;
 
         public void ProcessDefn(Definition defn)
         {
             defn.rootContainer.Print();
 
             //Load elements into a map
-            Dictionary<string, UiElement> elems = new Dictionary<string, UiElement>();
-            foreach(var e in defn.elements)
+            Dictionary<string, Content> contentsMap = new Dictionary<string, Content>();
+            foreach(var cDef in defn.contents)
             {
-                UiElement uie = null;
-                switch (e.type)
+                Content content = null;
+                switch (cDef.type)
                 {
-                    case "field": uie = new Field(e); break;
+                    case "field": content = new Field(cDef); break;
                 }
-                elems.Add(uie.id, uie);
+                contentsMap.Add(content.id, content);
             }
-            ResolveUiElementRecurse(defn.rootContainer, elems);
 
+            //Attach elements to the content containers
+            ResolveUiElementRecurse(defn.rootContainer, contentsMap);
+
+
+            var ctx = new GeneratorContext();
+            ctx.outPath = outPath;
+            ctx.fileExt = fileExt;
+            defn.rootContainer.Render(ctx);
         }
 
         //-------------------------------------------------
         private void ResolveUiElementRecurse(Container cont, 
-                                             Dictionary<string, UiElement> elems)
+                                             Dictionary<string, Content> elems)
         {
             if(cont.type == ContainerType.Content)
             {
                 var id = cont.contentId;
                 if(id != null && id != ""){
-                    if (elems.ContainsKey(id)) cont.uiElement = elems[id];
+                    if (elems.ContainsKey(id)) cont.content = elems[id];
                     else throw new Exception("UiElement with id '" + id + "' not found");
                 }
             }
@@ -45,5 +53,14 @@ namespace UiGen
                 foreach(var c in cont.children) ResolveUiElementRecurse(c, elems);
             }
         }
+    }
+
+    //==============================
+    class GeneratorContext
+    {
+        public string outPath;
+        public string fileExt;
+
+
     }
 }

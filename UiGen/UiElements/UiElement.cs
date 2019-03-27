@@ -1,16 +1,18 @@
-﻿using System;
+﻿using DotLiquid;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace UiGen.UiElements
 {
-    abstract class UiElement
+    abstract class Content
     {
         public string id;
-        public Dictionary<string, string> data;
-        public abstract void Render();
+        public Dictionary<string, object> data;
+        public abstract string Render();
+        protected static Template template;
 
-        public UiElement(UiElementDefn defn)
+        public Content(ContentDefn defn)
         {
             this.id = defn.id;
             this.data = defn.data;
