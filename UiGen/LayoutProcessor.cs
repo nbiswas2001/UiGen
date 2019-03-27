@@ -6,12 +6,10 @@ using System.Text.RegularExpressions;
 namespace UiGen
 {
 
-    class Layout
+    class LayoutProcessor
     {
-        public Container root;
-
-        private int ROW = 0;
-        private int COL = 1;
+        public const int ROW = 0;
+        public const int COL = 1;
 
         //----------------------------------------------------------------------
         // Scan for divisions in the block by looking to unbroken lines of boundary
@@ -20,26 +18,18 @@ namespace UiGen
         //   grid: The MxN charchter array
         //   rowScan: true means go from top to bottom, else left to right
         //   layout: the resulting Layout object 
-        public void process(char[,] grid)
+        public Container process(char[,] grid)
         {
-            root = new Container();
+            Container root = new Container();
             root.type = ContainerType.Root;
             ProcessRec(grid, ROW, root);
+            return root;
         }
 
         //----------------------------------------------------------------------
         // Recursive processor
         private void ProcessRec(char[,] grid, int scanBy, Container container)
         {
-            //Unless this is the root container ...
-            if (container.type != ContainerType.Root)
-            {
-                //if scanning rows then this container holds columns
-                container.type = scanBy == ROW ? ContainerType.Column : ContainerType.Row;
-            }
-            
-            PrintGrid("grid", grid);
-
             //find the lenght of border to scan. If scanBy is ROW, this is the
             //  no. of rows in grid, else for COL, the no. of columns
             var rowCount = grid.GetLength(0);
@@ -52,21 +42,26 @@ namespace UiGen
             {
                 if (IsBoundaryLine(i, grid, scanBy)) //end of a compartment
                 {
-                    //if this is a Row then get col widths specified, if any
-                    if (scanBy == ROW) AddColWidthMarkers(container, grid, i);
-
                     if (i > 0 && i < rowCount) //if not the first boundary line
                     {
-                        Container child = new Container();
-                        container.children.Add(child);
- 
+                        var childCont = container.CreateChild(scanBy);
+                        if (childCont.type == ContainerType.Row)
+                        {
+                            childCont.colWidthMarkers = GetColWidthMarkers(grid, startRow);
+                        }
+                        else if(childCont.type == ContainerType.Column)
+                        {
+                            childCont.ResolveColumnWidth(i);
+                        }
+                        
+
                         //PrintGrid("g", grid);
                         var sliced = Slice(grid, startRow + 1, i-1);
                         //PrintGrid("s", sliced);
                         var transposed = Transpose(sliced);
                         //PrintGrid("t", transposed);
                         var newScanBy = scanBy == ROW ? COL : ROW;
-                        ProcessRec(transposed, newScanBy, child);
+                        ProcessRec(transposed, newScanBy, childCont);
                         isLeaf = false;
                         startRow = i; //new start pos
                         
@@ -80,32 +75,58 @@ namespace UiGen
             //if last divider row is missing - add the last compartment
             if (hasDivider && !IsBoundaryLine(rowCount-1, grid, scanBy)) 
             {
-                Container child = new Container();
-                container.children.Add(child);
+                var childCont = container.CreateChild(scanBy);
+                childCont.ResolveColumnWidth(startRow);
+
                 var sliced = Slice(grid, startRow + 1, rowCount - 1);
                 var transposed = Transpose(sliced);
                 var newScanBy = scanBy == ROW ? COL : ROW;
-                ProcessRec(transposed, newScanBy, child);
+                ProcessRec(transposed, newScanBy, childCont);
             }
 
             //if this a leaf node i.e. it is either pure content 
             if (isLeaf)
             { 
-                var contentContainer = new Container();
-                contentContainer.type = ContainerType.Content;
+                var contentCont = container.CreateChild(-1); //-1 -> type=Content
                 //PrintGrid("grid", grid);
                 var g = scanBy == ROW ? grid : Transpose(grid);
                 PrintGrid("content", g);
-                contentContainer.content = GetContent(g);
-                container.children.Add(contentContainer);
+                contentCont.contentId = GetContent(g);
             }
         }
 
- 
         //------------------------------------------------------------
-        private void AddColWidthMarkers(Container cont, char[,] grid, int boundaryRow)
+        private List<ColWidthMarker> GetColWidthMarkers(char[,] grid, int boundaryRow)
         {
-            //PrintGrid("grid", grid);
+            var g = Slice(grid, boundaryRow, boundaryRow);
+            PrintGrid("br", g);
+            var result = new List<ColWidthMarker>();
+            var l = grid.GetLength(1);
+            StringBuilder num = null;
+            int pos = 0;
+            for (var i = 0; i < l; i++)
+            {
+                var c = grid[boundaryRow, i];
+                if (Char.IsDigit(c))
+                {
+                    if (num == null)
+                    {
+                        pos = i;
+                        num = new StringBuilder();
+                    }
+                    num.Append(c);
+                }
+                else
+                {
+                    if (num != null)
+                    {
+                        var cwm = new ColWidthMarker(int.Parse(num.ToString()), pos);
+                        result.Add(cwm);
+                        num = null;
+                    }
+                }
+            }
+            return result;
         }
 
         //------------------------------------------------------------
