@@ -16,6 +16,7 @@
 ###
 
 layout:
-content:
+elements:
   - id: AB
     type: text 
+    defn: label='Name', width=20

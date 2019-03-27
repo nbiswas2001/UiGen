@@ -8,7 +8,7 @@ namespace UiGen
 {
     class DefinitionReader
     {
-        public Definition ReadFromFile(String filename)
+        public Definition ReadDefnFromFile(String filename)
         {
             //Read file
             string text = System.IO.File.ReadAllText(filename);
@@ -17,7 +17,10 @@ namespace UiGen
             var lines = text.Split("\r\n");
             var defnTxt = GetDefinitionTexts(lines);
             var defn = ParseYaml(defnTxt.Item2);
-            defn.grid = GetGrid(defnTxt.Item1);
+
+            var layout = new LayoutProcessor();
+            defn.rootContainer = layout.process(GetGrid(defnTxt.Item1));
+
             return defn;
         }
 
