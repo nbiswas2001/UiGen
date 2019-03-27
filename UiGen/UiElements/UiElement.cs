@@ -9,5 +9,11 @@ namespace UiGen.UiElements
         public string id;
         public Dictionary<string, string> data;
         public abstract void Render();
+
+        public UiElement(UiElementDefn defn)
+        {
+            this.id = defn.id;
+            this.data = defn.data;
+        }
     }
 }

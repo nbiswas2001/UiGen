@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using UiGen.UiElements;
 
 namespace UiGen
 {
@@ -12,6 +13,7 @@ namespace UiGen
         public List<ColWidthMarker> colWidthMarkers;
         public Container parent;
         public int columnWidth = -1;
+        public UiElement uiElement;
 
         //------------------------------------------------
         public void Print()
@@ -62,7 +64,7 @@ namespace UiGen
             return c;
         }
 
-    }
+     }
 
     //=====================
     enum ContainerType

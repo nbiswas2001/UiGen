@@ -8,11 +8,11 @@ namespace UiGen
     {
         public Container rootContainer;
         public LayoutDefn layout;
-        public List<UIElementDefn> elements;
+        public List<UiElementDefn> elements;
     }
 
     //============================
-    class UIElementDefn
+    class UiElementDefn
     {
         public string id;
         public string type;

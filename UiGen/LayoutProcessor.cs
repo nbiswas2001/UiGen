@@ -55,11 +55,8 @@ namespace UiGen
                         }
                         
 
-                        //PrintGrid("g", grid);
                         var sliced = Slice(grid, startRow + 1, i-1);
-                        //PrintGrid("s", sliced);
                         var transposed = Transpose(sliced);
-                        //PrintGrid("t", transposed);
                         var newScanBy = scanBy == ROW ? COL : ROW;
                         ProcessRec(transposed, newScanBy, childCont);
                         isLeaf = false;
@@ -88,9 +85,7 @@ namespace UiGen
             if (isLeaf)
             { 
                 var contentCont = container.CreateChild(-1); //-1 -> type=Content
-                //PrintGrid("grid", grid);
                 var g = scanBy == ROW ? grid : Transpose(grid);
-                PrintGrid("content", g);
                 contentCont.contentId = GetContent(g);
             }
         }
@@ -99,7 +94,6 @@ namespace UiGen
         private List<ColWidthMarker> GetColWidthMarkers(char[,] grid, int boundaryRow)
         {
             var g = Slice(grid, boundaryRow, boundaryRow);
-            PrintGrid("br", g);
             var result = new List<ColWidthMarker>();
             var l = grid.GetLength(1);
             StringBuilder num = null;
