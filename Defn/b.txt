@@ -19,6 +19,7 @@ layout:
     defn: class=form-row
   - type: column
     defn: size=sm
+
 contents:
   - id: F1
     type: field 
@@ -27,5 +28,5 @@ contents:
     type: field 
     defn: label=Age, name=age, source=d.age
   - id: F3
-    type: field 
-    defn: label=County, name=county, source=d.county
+    type: table 
+    defn: columns=Name|Age|Height|Sex

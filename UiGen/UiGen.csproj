@@ -6,15 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="templates.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="templates.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DotLiquid" Version="2.0.298" />
     <PackageReference Include="YamlDotNet" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="templates-ext.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="templates.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

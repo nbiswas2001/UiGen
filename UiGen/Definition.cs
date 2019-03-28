@@ -34,24 +34,6 @@ namespace UiGen
         }
     }
 
-    //============================
-    class ContentDefn
-    {
-        public string id;
-        public string type;
-        public string defn;
-
-        private Dictionary<String, object> _data;
-        public Dictionary<String, object> data
-        {
-            get
-            {
-                if (_data == null) _data = DefinitionReader.ReadData(defn);
-                return _data;
-            }
-        }
-    }
-
     //======================
     class LayoutDefn
     {

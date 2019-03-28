@@ -74,8 +74,7 @@ namespace UiGen
                 if (ctx.contentsMap.ContainsKey(contentId))
                 {
                     var cDef = ctx.contentsMap[contentId];
-                    var tmplt = ctx.templatesMap[cDef.type];
-                    result = tmplt.Render(Hash.FromDictionary(cDef.data));
+                    result = cDef.Render(ctx);
                 }
                 else throw new Exception("Content with id '" + contentId + "' appears in the layout but is not defined");
             }

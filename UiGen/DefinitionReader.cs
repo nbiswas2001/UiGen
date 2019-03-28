@@ -82,9 +82,9 @@ namespace UiGen
         //-----------------------------------------
         private Definition ParseYaml(String yml)
         {
+            var deserialiser = new Deserializer();
             var input = new StringReader(yml);
-            var deserializer = new Deserializer();
-            var defn = deserializer.Deserialize<Definition>(input);
+            var defn = deserialiser.Deserialize<Definition>(input);
             return defn;
         }
 

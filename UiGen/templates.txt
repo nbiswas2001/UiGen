@@ -18,3 +18,21 @@
     <label>{{label}}</label>
     <input type = "text" class="form-control {{style}}" name="{{name}}" [(ngModel)]="{{source}}" />
 </div>
+
+### table 
+<table class="table table-sm table-hover">  
+    <thead class="thead-dark">
+    <tr>
+		{% for col in columns %}
+        <th>{{col}}</th>
+		{% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+		<tr> 
+			{% for col in columns %}
+			<td> sample </td>
+			{% endfor %}
+		</tr>
+    </tbody>
+</table>

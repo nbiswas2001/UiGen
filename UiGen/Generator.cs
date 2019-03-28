@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace UiGen
 {
@@ -18,6 +19,10 @@ namespace UiGen
 
             //Attach elements to the content containers
             var text = defn.rootContainer.Render(ctx);
+
+            //remove blank lines
+            text = text.Replace("\n\n", "\n");
+
             System.IO.File.WriteAllText(ctx.outPath+"\\"+defn.name+ctx.fileExt, text);
 
             //Write test file
