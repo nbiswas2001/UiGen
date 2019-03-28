@@ -1,0 +1,31 @@
+
+
+-----------4-----------------------
+|     F1   |  F2                  |         
+|          |                      |
+-----------------------------------
+|    F3                           |
+|                                 |
+-----------------------------------
+
+
+
+###
+name: form1
+layout:
+  - type: root
+    defn: class=container-fluid, style=p-5
+  - type: row
+    defn: class=form-row
+  - type: column
+    defn: size=sm
+contents:
+  - id: F1
+    type: field 
+    defn: label=Name, name=name, source=d.name
+  - id: F2
+    type: field 
+    defn: label=Age, name=age, source=d.age
+  - id: F3
+    type: field 
+    defn: label=County, name=county, source=d.county

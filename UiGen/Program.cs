@@ -6,16 +6,18 @@ namespace UiGen
     {
         static void Main(string[] args)
         {
-
+            var rootFolder = @"C:\Dev\Code\MyProjects\NET\UiGen\Defn";
             var reader = new DefinitionReader();
-            var def = reader.ReadDefnFromFile(@"C:\Dev\Code\MyProjects\NET\UiGen\Defn\a.txt");
+            var def = reader.ReadDefnFromFile(rootFolder+@"\b.txt");
 
             var generator = new Generator();
-            generator.outPath = @"C:\Dev\Code\MyProjects\NET\UiGen\Defn";
-            generator.fileExt = ".html";
-            generator.ProcessDefn(def);
+            var ctx = new GeneratorContext();
+            ctx.outPath = rootFolder+@"\output";
+            ctx.fileExt = ".html";
+            reader.LoadTemplatesFromFile("templates.txt", ctx.templatesMap);
+            generator.ProcessDefn(def, ctx);
 
-            Console.Read();
+            Console.WriteLine("Done!");
         }
 
 

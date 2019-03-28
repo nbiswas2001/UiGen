@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotLiquid;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -14,7 +15,7 @@ namespace UiGen
             string text = System.IO.File.ReadAllText(filename);
 
             //Convert to array of strings
-            var lines = text.Split("\r\n");
+            var lines = text.Split(Environment.NewLine);
             var defnTxt = GetDefinitionTexts(lines);
             var defn = ParseYaml(defnTxt.Item2);
 
@@ -86,5 +87,64 @@ namespace UiGen
             var defn = deserializer.Deserialize<Definition>(input);
             return defn;
         }
+
+        //--------------------------------------------------------------------------
+        public void LoadTemplatesFromFile(string file, Dictionary<String, Template> templatesMap)
+        {
+           
+            const string SEP = "###";
+            string text = System.IO.File.ReadAllText(file);
+            var lines = text.Split(Environment.NewLine);
+            StringBuilder tmpltSB = null;
+            string key = "";
+            foreach(var line in lines)
+            {
+                if (line.StartsWith(SEP))
+                {
+                    if (tmpltSB != null)
+                    {
+                        var tmpltTxt = tmpltSB.ToString();
+                        var t = Template.Parse(tmpltTxt);
+                        if (!templatesMap.ContainsKey(key)) templatesMap.Add(key, t);
+                        else throw new Exception("Template with key '" + key + "' already loaded.");
+                    }
+
+                    key = line.Substring(3).Trim();
+                    tmpltSB = new StringBuilder();
+                }
+                else
+                {
+                    var l = line.Trim();
+                    {
+                        tmpltSB.Append("\n").Append(l);
+                    }
+                }
+
+            }
+            if (tmpltSB != null)
+            {
+                var tmpltTxt = tmpltSB.ToString();
+                var t = Template.Parse(tmpltTxt);
+                templatesMap.Add(key, t);
+            }
+
+        }
+
+        //----------------------------------------------------------------
+        public static Dictionary<String, object> ReadData(String dataTxt)
+        {
+            var data = new Dictionary<string, object>();
+            var s1 = dataTxt.Split(",");
+            foreach (var item in s1)
+            {
+                var s2 = item.Split("=");
+                var k = s2[0].Trim();
+                var v = s2[1].Trim();
+                data.Add(k, v);
+            }
+            return data;
+
+        }
+
     }
 }

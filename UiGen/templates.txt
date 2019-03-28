@@ -1,0 +1,20 @@
+﻿### root
+<div class="{{class}} {{style}}">
+	{{content}}
+</div>
+
+### row
+<div class="{{class}} {{style}}">
+	{{content}}
+</div>
+
+### column
+<div class="col-{{size}}{{width}} {{style}}">
+	{{content}}
+</div>
+
+### field 
+<div class="form-group">
+    <label>{{label}}</label>
+    <input type = "text" class="form-control {{style}}" name="{{name}}" [(ngModel)]="{{source}}" />
+</div>

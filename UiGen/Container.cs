@@ -1,7 +1,7 @@
-﻿using System;
+﻿using DotLiquid;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using UiGen.UiElements;
 
 namespace UiGen
 {
@@ -13,7 +13,6 @@ namespace UiGen
         public List<ColWidthMarker> colWidthMarkers;
         public Container parent;
         public int columnWidth = -1;
-        public Content content;
 
         //------------------------------------------------
         public void Print()
@@ -49,16 +48,6 @@ namespace UiGen
             }
         }
 
-        //--------------------------------------
-        private static string rowTemplate = @"<div class=""form-row"">";
-        private static string colTemplate = @"<div class=""col-sm-@Model.colWidth"">";
-
-
-        public void Render(GeneratorContext ctx)
-        {
-            throw new NotImplementedException();
-        }
-
         //-------------------------------------
         public Container CreateChild(int scanBy)
         {
@@ -74,7 +63,75 @@ namespace UiGen
             return c;
         }
 
-     }
+        //-------------------------------------------------------------------
+        public string Render(GeneratorContext ctx)
+        {
+            var result = "";
+            if (type == ContainerType.Content)
+            {
+                if (contentId == null || contentId == "") return "";
+
+                if (ctx.contentsMap.ContainsKey(contentId))
+                {
+                    var cDef = ctx.contentsMap[contentId];
+                    var tmplt = ctx.templatesMap[cDef.type];
+                    result = tmplt.Render(Hash.FromDictionary(cDef.data));
+                }
+                else throw new Exception("Content with id '" + contentId + "' appears in the layout but is not defined");
+            }
+            else 
+            {
+                if(type == ContainerType.Row)
+                {
+                    //calculate the width of the last column
+                    var totalWidth = 0;
+                    var colCount = children.Count;
+                    var widthPresent = false;
+                    for(int i = 0; i < colCount; i++)
+                    {
+                        var ch = children[i];
+                        if (ch.columnWidth != -1) totalWidth += ch.columnWidth;
+                        if (i == 0)
+                        {
+                            widthPresent = ch.columnWidth != -1; //set if width is present on first col
+                        }
+                        else if(i > 0 && i < colCount - 1) //if middle row
+                        {
+                            if ((ch.columnWidth != -1) != widthPresent) //if widthPresent doesn't match error out
+                                throw new Exception("Either all rows should have width or none at all.");
+                        }
+                        else //if last row
+                        {
+                            //if width was present then set width on last column
+                            if (totalWidth > 0) ch.columnWidth = 12 - totalWidth;
+                        }
+                    }
+                }
+
+                //Load template args
+                var n = type.ToString().ToLower();
+                var hash = Hash.FromDictionary(ctx.layoutMap[n].data);
+
+                //Render the content for children and add it to template args
+                var cSB = new StringBuilder();
+                foreach (var c in children) cSB.Append(c.Render(ctx));
+                hash.Add("content", cSB.ToString());
+
+                //If column add width as a template arg
+                if (type == ContainerType.Column)
+                {
+                    var w = columnWidth > 0 ? "-" + columnWidth : "";
+                    hash.Add("width", w);
+                }
+
+                //Get template and render
+                var tmplt = ctx.templatesMap[n];
+                result = tmplt.Render(hash);
+            }
+
+            return result;
+        }
+    }
 
     //=====================
     enum ContainerType

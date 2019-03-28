@@ -10,4 +10,13 @@
     <PackageReference Include="YamlDotNet" Version="6.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="templates-ext.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="templates.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

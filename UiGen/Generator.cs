@@ -1,66 +1,60 @@
-﻿using System;
+﻿using DotLiquid;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using UiGen.UiElements;
 
 namespace UiGen
 {
     class Generator
     {
-        public string outPath;
-        public string fileExt;
 
-        public void ProcessDefn(Definition defn)
+        public void ProcessDefn(Definition defn, GeneratorContext ctx)
         {
             defn.rootContainer.Print();
 
             //Load elements into a map
-            Dictionary<string, Content> contentsMap = new Dictionary<string, Content>();
-            foreach(var cDef in defn.contents)
-            {
-                Content content = null;
-                switch (cDef.type)
-                {
-                    case "field": content = new Field(cDef); break;
-                }
-                contentsMap.Add(content.id, content);
-            }
+            foreach(var cDef in defn.contents) ctx.contentsMap.Add(cDef.id, cDef);
+            ctx.layoutMap = defn.GetLayoutMap();
 
             //Attach elements to the content containers
-            ResolveUiElementRecurse(defn.rootContainer, contentsMap);
+            var text = defn.rootContainer.Render(ctx);
+            System.IO.File.WriteAllText(ctx.outPath+"\\"+defn.name+ctx.fileExt, text);
 
+            //Write test file
+            var testFilename = ctx.outPath + "\\" + defn.name + ".test" + ctx.fileExt;
+            WriteTestFile(text, testFilename);
 
-            var ctx = new GeneratorContext();
-            ctx.outPath = outPath;
-            ctx.fileExt = fileExt;
-            defn.rootContainer.Render(ctx);
         }
 
-        //-------------------------------------------------
-        private void ResolveUiElementRecurse(Container cont, 
-                                             Dictionary<string, Content> elems)
+        //-----------------------------------------------------------
+        private void WriteTestFile(String text, String filename)
         {
-            if(cont.type == ContainerType.Content)
-            {
-                var id = cont.contentId;
-                if(id != null && id != ""){
-                    if (elems.ContainsKey(id)) cont.content = elems[id];
-                    else throw new Exception("UiElement with id '" + id + "' not found");
-                }
-            }
-            else
-            {
-                foreach(var c in cont.children) ResolveUiElementRecurse(c, elems);
-            }
+            var testLines = new List<string>();
+            string s1 = @"
+            <!doctype html>
+            <html lang=""en"">
+              <head>
+                <meta charset=""utf-8"">
+                <meta name=""viewport"" content=""width=device-width, initial-scale=1, shrink-to-fit=no"">
+                <link rel=""stylesheet"" href=""https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"" integrity=""sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"" crossorigin=""anonymous"">
+                <title>Test</title>
+              </head>
+              <body>";
+            testLines.Add(s1);
+            testLines.Add(text);
+            testLines.Add("</body></html>");
+            System.IO.File.WriteAllLines(filename, testLines);
         }
-    }
+
+}
 
     //==============================
     class GeneratorContext
     {
         public string outPath;
         public string fileExt;
-
-
+        public Dictionary<string, Template> templatesMap = new Dictionary<string, Template>();
+        public Dictionary<string, ContentDefn> contentsMap = new Dictionary<string, ContentDefn>();
+        public Dictionary<string, LayoutDefn> layoutMap = new Dictionary<string, LayoutDefn>();
     }
 }
