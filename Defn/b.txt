@@ -1,10 +1,10 @@
 
 
 -----------4-----------------------
-|     F1   |  F2                  |         
+|     F1   |  F2, F3              |         
 |          |                      |
 -----------------------------------
-|    F3                           |
+|               F4                |
 |                                 |
 -----------------------------------
 
@@ -28,6 +28,9 @@ contents:
     type: field 
     defn: label=Age; name=age; model=d.age
   - id: F3
+    type: text 
+    defn: html=<p>Some random text<p>; style=xxx
+  - id: F4
     type: table 
     defn: columns=[Name,Age,Height,Sex]; itemName=task; 
           columnModels=[name,age,height,sex]; collectionModel=d.tasks

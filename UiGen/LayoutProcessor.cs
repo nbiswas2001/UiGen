@@ -86,23 +86,29 @@ namespace UiGen
             { 
                 var contentCont = container.CreateChild(-1); //-1 -> type=Content
                 var g = scanBy == ROW ? grid : Transpose(grid);
-                contentCont.contentId = GetContentId(g);
+                contentCont.contentIds = GetContentIds(g);
             }
         }
 
         //------------------------------------------------------------
         private List<ColWidthMarker> GetColWidthMarkers(char[,] grid, int boundaryRow)
         {
-            var g = Slice(grid, boundaryRow, boundaryRow);
             var result = new List<ColWidthMarker>();
+
+            //get the length of the row divider line
             var l = grid.GetLength(1);
             StringBuilder num = null;
             int pos = 0;
+
+            //scan the line
             for (var i = 0; i < l; i++)
             {
+                //if the char is a digit ...
                 var c = grid[boundaryRow, i];
                 if (Char.IsDigit(c))
                 {
+                    // ... start compiling a number by 
+                    // appending consecutive digits
                     if (num == null)
                     {
                         pos = i;
@@ -110,20 +116,19 @@ namespace UiGen
                     }
                     num.Append(c);
                 }
-                else
+                else if (num != null) //when the number is ready
                 {
-                    if (num != null)
-                    {
-                        var cwm = new ColWidthMarker(int.Parse(num.ToString()), pos);
-                        result.Add(cwm);
-                        num = null;
-                    }
+                    //get the number and its position, and add to list
+                    var cwm = new ColWidthMarker(int.Parse(num.ToString()), pos);
+                    result.Add(cwm);
+                    num = null;
                 }
             }
             return result;
         }
 
-        //------------------------------------------------------------
+        //------------------------------------------------------------------------
+        //Gets a horizontal slice of the grid from a starting row to an ending row
         private char[,] Slice(char[,] grid, int startRow, int endRow)
         {
             int cols = grid.GetLength(1);
@@ -149,7 +154,8 @@ namespace UiGen
             return result;
         }
 
-        //------------------------------------------------------------
+        //-----------------------------------------------------------------
+        // Checks if a line is a boundary line 
         private bool IsBoundaryLine(int rowNum, char[,] grid, int scanBy)
         {
             int cols = grid.GetLength(1);
@@ -157,6 +163,7 @@ namespace UiGen
             for (int i = 0; i < cols; i++)
             {
                 var c = grid[rowNum, i];
+                //Row boundaries -> '-' or digits for colWidth. Col boundaries -> '|'
                 if ((scanBy == ROW && c != '-' && !Char.IsDigit(c)) || (scanBy == COL && c != '|'))
                 {
                     result = false;
@@ -166,18 +173,27 @@ namespace UiGen
             return result;
         }
 
-        //----------------------------------
-        private String GetContentId(char[,] grid)
+        //--------------------------------------------
+        //Gets a one (or more) contentIds in the grid
+        private List<String> GetContentIds(char[,] grid)
         {
-            var result = new StringBuilder();
+            var result = new List<String>();
             int rows = grid.GetLength(0);
             int cols = grid.GetLength(1);
+            var lineBuilder = new StringBuilder();
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < cols; j++)
-                    if (grid[i, j] != ' ') result.Append(grid[i, j]);
+                    if (grid[i, j] != ' ') lineBuilder.Append(grid[i, j]);
+                var line = lineBuilder.ToString();
+                if (line != "")
+                {
+                    var idArr = line.Split(',');
+                    foreach (var id in idArr) result.Add(id);
+                    lineBuilder = new StringBuilder();
+                }
             }
-            return result.ToString();
+            return result;
         }
 
         //----------------------------------

@@ -8,29 +8,11 @@ namespace UiGen
     class Container
     {
         public List<Container> children = new List<Container>();
-        public String contentId;
+        public List<String> contentIds;
         public ContainerType type = ContainerType.Row;
         public List<ColWidthMarker> colWidthMarkers;
         public Container parent;
         public int columnWidth = -1;
-
-        //------------------------------------------------
-        public void Print()
-        {
-            Console.WriteLine("\n***************\n");
-            PrintRecurse(this, "");
-            Console.WriteLine("\n");
-        }
-
-        private void PrintRecurse(Container cont, String indent)
-        {
-            if (cont.type == ContainerType.Content) Console.WriteLine(indent + cont.contentId);
-            else
-            {
-                Console.WriteLine(indent + "C[" + cont.type + "]");
-                foreach (var child in cont.children) PrintRecurse(child, indent + "  ");
-            }
-        }
 
         //-----------------------------------
         public void ResolveColumnWidth(int endCharPos)
@@ -67,16 +49,21 @@ namespace UiGen
         public string Render(GeneratorContext ctx)
         {
             var result = "";
+            var contentStringBuilder = new StringBuilder();
             if (type == ContainerType.Content)
             {
-                if (contentId == null || contentId == "") return "";
+                if (contentIds == null) return "";
 
-                if (ctx.contentsMap.ContainsKey(contentId))
+                foreach(var contentId in contentIds)
                 {
-                    var cDef = ctx.contentsMap[contentId];
-                    result = cDef.Render(ctx);
+                    if (ctx.contentsMap.ContainsKey(contentId))
+                    {
+                        var cDef = ctx.contentsMap[contentId];
+                        contentStringBuilder.Append(cDef.Render(ctx));
+                    }
+                    else throw new Exception("Content with id '" + contentId + "' appears in the layout but is not defined");
                 }
-                else throw new Exception("Content with id '" + contentId + "' appears in the layout but is not defined");
+                result = contentStringBuilder.ToString();
             }
             else 
             {
@@ -130,6 +117,25 @@ namespace UiGen
 
             return result;
         }
+
+        //------------------------------------------------
+        public void Print()
+        {
+            Console.WriteLine("\n***************\n");
+            PrintRecurse(this, "");
+            Console.WriteLine("\n");
+        }
+
+        private void PrintRecurse(Container cont, String indent)
+        {
+            if (cont.type == ContainerType.Content) Console.WriteLine(indent + String.Join(",", cont.contentIds));
+            else
+            {
+                Console.WriteLine(indent + "C[" + cont.type + "]");
+                foreach (var child in cont.children) PrintRecurse(child, indent + "  ");
+            }
+        }
+
     }
 
     //=====================
