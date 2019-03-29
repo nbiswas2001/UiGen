@@ -26,24 +26,9 @@ namespace UiGen
         {
             var tmplt = ctx.templatesMap[type];
             var hash = Hash.FromDictionary(data);
-
-            if (type == "table")
-            {
-                var colTxt = (string) hash["columns"];
-                hash["columns"] =GetTableColumnNames(colTxt);
-            }
-
             var result = tmplt.Render(hash);
             return result;
         }
 
-        //--------------------------------------------------
-        private List<String> GetTableColumnNames(String colTxt)
-        {
-            var colsArr = colTxt.Split("|");
-            var colNames = new List<String>();
-            foreach (var col in colsArr) colNames.Add(col.Trim());
-            return colNames;
-        }
     }
 }

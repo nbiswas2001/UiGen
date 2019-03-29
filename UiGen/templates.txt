@@ -16,7 +16,7 @@
 ### field 
 <div class="form-group">
     <label>{{label}}</label>
-    <input type = "text" class="form-control {{style}}" name="{{name}}" [(ngModel)]="{{source}}" />
+    <input type="text" class="form-control {{style}}" name="{{name}}" [(ngModel)]="{{model}}" />
 </div>
 
 ### table 
@@ -28,10 +28,10 @@
 		{% endfor %}
     </tr>
     </thead>
-    <tbody>
-		<tr> 
-			{% for col in columns %}
-			<td> sample </td>
+    <tbody *ngIf="{{collectionModel}} != null">
+		<tr *ngFor="let {{itemName}} of {{collectionModel}}; let idx = index;" (click)="{{itemName}}RowClick(idx)"> 
+			{% for cm in columnModels %}
+			<td>{{oTag1}}{{itemName}}.{{cm}}{{cTag1}}</td>
 			{% endfor %}
 		</tr>
     </tbody>

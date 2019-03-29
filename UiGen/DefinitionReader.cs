@@ -134,14 +134,29 @@ namespace UiGen
         public static Dictionary<String, object> ReadData(String dataTxt)
         {
             var data = new Dictionary<string, object>();
-            var s1 = dataTxt.Split(",");
+            var s1 = dataTxt.Split(';');
             foreach (var item in s1)
             {
-                var s2 = item.Split("=");
-                var k = s2[0].Trim();
-                var v = s2[1].Trim();
-                data.Add(k, v);
+                var s2 = item.Split('=');
+                var key = s2[0].Trim();
+                var valTxt = s2[1].Trim();
+
+                //if array
+                if (valTxt.StartsWith('[') && valTxt.EndsWith(']'))
+                {
+                    var arrTxt = valTxt.Substring(1, valTxt.Length - 2);
+                    var arr = arrTxt.Split(',');
+                    var valList = new List<String>();
+                    foreach (var arrItem in arr) valList.Add(arrItem.Trim());
+                    data.Add(key, valList);
+                }
+                else data.Add(key, valTxt);
             }
+            data.Add("oTag1", "{{");
+            data.Add("cTag1", "}}");
+            data.Add("oTag2", "{%");
+            data.Add("cTag2", "%}");
+
             return data;
 
         }

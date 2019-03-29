@@ -14,7 +14,7 @@
 name: form1
 layout:
   - type: root
-    defn: class=container-fluid, style=p-5
+    defn: class=container-fluid; style=p-5
   - type: row
     defn: class=form-row
   - type: column
@@ -23,10 +23,11 @@ layout:
 contents:
   - id: F1
     type: field 
-    defn: label=Name, name=name, source=d.name
+    defn: label=Name; name=name; model=d.name
   - id: F2
     type: field 
-    defn: label=Age, name=age, source=d.age
+    defn: label=Age; name=age; model=d.age
   - id: F3
     type: table 
-    defn: columns=Name|Age|Height|Sex
+    defn: columns=[Name,Age,Height,Sex]; itemName=task; 
+          columnModels=[name,age,height,sex]; collectionModel=d.tasks

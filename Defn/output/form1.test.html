@@ -14,13 +14,13 @@
 <div class="col-sm-4 ">
 <div class="form-group">
 <label>Name</label>
-<input type = "text" class="form-control " name="name" [(ngModel)]="d.name" />
+<input type="text" class="form-control " name="name" [(ngModel)]="d.name" />
 </div>
 </div>
 <div class="col-sm-8 ">
 <div class="form-group">
 <label>Age</label>
-<input type = "text" class="form-control " name="age" [(ngModel)]="d.age" />
+<input type="text" class="form-control " name="age" [(ngModel)]="d.age" />
 </div>
 </div>
 </div>
@@ -35,12 +35,12 @@
 <th>Sex</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td> sample </td>
-<td> sample </td>
-<td> sample </td>
-<td> sample </td>
+<tbody *ngIf="d.tasks != null">
+<tr *ngFor="let task of d.tasks; let idx = index;" (click)="taskRowClick(idx)">
+<td>{{task.name}}</td>
+<td>{{task.age}}</td>
+<td>{{task.height}}</td>
+<td>{{task.sex}}</td>
 </tr>
 </tbody>
 </table>
