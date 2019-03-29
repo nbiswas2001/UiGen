@@ -6,10 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="global-styles.txt" />
     <None Remove="templates.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="global-styles.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="templates.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -18,12 +22,6 @@
   <ItemGroup>
     <PackageReference Include="DotLiquid" Version="2.0.298" />
     <PackageReference Include="YamlDotNet" Version="6.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="templates-ext.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

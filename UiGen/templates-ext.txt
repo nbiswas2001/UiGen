@@ -1,5 +1,0 @@
-﻿### field ###
-<div class=""form-group"">
-    <label>@Model.label</label>
-    <input type = ""text"" class=""form-control"" name=""@Model.name"" [(ngModel)]=""@Model.source"" />
-</div>

@@ -10,10 +10,13 @@ namespace UiGen
             var reader = new DefinitionReader();
             var def = reader.ReadDefnFromFile(rootFolder+@"\b.txt");
 
+
             var generator = new Generator();
             var ctx = new GeneratorContext();
             ctx.outPath = rootFolder+@"\output";
             ctx.fileExt = ".html";
+            ctx.globalStyles = reader.LoadGlobalStylesFromFile("global-styles.txt");
+
             reader.LoadTemplatesFromFile("templates.txt", ctx.templatesMap);
             generator.ProcessDefn(def, ctx);
 

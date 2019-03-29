@@ -1,0 +1,3 @@
+﻿root: class=container-fluid; style=p-5
+row: class=form-row
+column: size=sm

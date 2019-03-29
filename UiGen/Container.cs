@@ -96,7 +96,7 @@ namespace UiGen
 
                 //Load template args
                 var n = type.ToString().ToLower();
-                var hash = Hash.FromDictionary(ctx.layoutMap[n].data);
+                var hash = Hash.FromDictionary(ctx.globalStyles.stylesData[n]);
 
                 //Render the content for children and add it to template args
                 var cSB = new StringBuilder();

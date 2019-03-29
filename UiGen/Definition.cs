@@ -8,47 +8,37 @@ namespace UiGen
     {
         public Container rootContainer;
         public string name;
-        public List<LayoutDefn> layout;
+        public List<ContainerDefn> containers;
         public List<ContentDefn> contents;
-
-        //--------------------------------------
-        public Dictionary<string, LayoutDefn> GetLayoutMap ()
-        {
-            var result = new Dictionary<string, LayoutDefn>();
-            result.Add("root", GetLayout("root", "class=container"));
-            result.Add("row", GetLayout("row", "class=row"));
-            result.Add("column", GetLayout("column", "size=sm"));
-            return result;
-        }
-
-        //-----------------------------------
-        private LayoutDefn GetLayout(string type, string defaultDefn)
-        {
-            var lo = layout.Find(l => l.type == type);
-            if (lo == null)
-            {
-                lo = new LayoutDefn();
-                lo.defn = defaultDefn;
-            }
-            return lo;
-        }
     }
 
-    //======================
-    class LayoutDefn
+    //======================================================
+    class GlobalStyles
     {
-        public string type;
-        public string defn;
+        public GlobalStyles(Dictionary<string, string> map)
+        {
+            this.map = map;
+        }
+        private Dictionary<string, string> map;
 
-        private Dictionary<String, object> _data;
-        public Dictionary<String, object> data
+        private Dictionary<string, Dictionary<string, object>> _stylesData;
+        public Dictionary<string, Dictionary<string, object>> stylesData
         {
             get
             {
-                if (_data == null) _data = DefinitionReader.ReadData(defn);
-                return _data;
+                if (_stylesData == null)
+                {
+                    _stylesData = new Dictionary<string, Dictionary<string, object>>();
+                    foreach (var k in map.Keys)
+                    {
+                        var data = DefinitionReader.ReadData(map[k]);
+                        _stylesData.Add(k, data);
+                    }
+                }
+                return _stylesData;
             }
         }
     }
+
 }
 

@@ -15,7 +15,6 @@ namespace UiGen
 
             //Load elements into a map
             foreach(var cDef in defn.contents) ctx.contentsMap.Add(cDef.id, cDef);
-            ctx.layoutMap = defn.GetLayoutMap();
 
             //Attach elements to the content containers
             var text = defn.rootContainer.Render(ctx);
@@ -60,6 +59,7 @@ namespace UiGen
         public string fileExt;
         public Dictionary<string, Template> templatesMap = new Dictionary<string, Template>();
         public Dictionary<string, ContentDefn> contentsMap = new Dictionary<string, ContentDefn>();
-        public Dictionary<string, LayoutDefn> layoutMap = new Dictionary<string, LayoutDefn>();
+        public Dictionary<string, ContainerDefn> containerMap = new Dictionary<string, ContainerDefn>();
+        public GlobalStyles globalStyles;
     }
 }

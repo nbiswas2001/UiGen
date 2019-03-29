@@ -12,17 +12,27 @@ namespace UiGen
         public Definition ReadDefnFromFile(String filename)
         {
             //Read file
-            string text = System.IO.File.ReadAllText(filename);
+            string text = File.ReadAllText(filename);
 
             //Convert to array of strings
             var lines = text.Split(Environment.NewLine);
             var defnTxt = GetDefinitionTexts(lines);
-            var defn = ParseYaml(defnTxt.Item2);
-
+            var deserialiser = new Deserializer();
+            var input = new StringReader(defnTxt.Item2);
+            var defn = deserialiser.Deserialize<Definition>(input);
             var layout = new LayoutProcessor();
             defn.rootContainer = layout.process(GetGrid(defnTxt.Item1));
-
             return defn;
+        }
+
+        //----------------------------------------------------------
+        public GlobalStyles LoadGlobalStylesFromFile(String filename)
+        {
+            string text = File.ReadAllText(filename);
+            var deserialiser = new Deserializer();
+            var input = new StringReader(text);
+            var result = new GlobalStyles(deserialiser.Deserialize<Dictionary<string, string>>(input));
+            return result; 
         }
 
         //------------------------------------------
@@ -77,15 +87,6 @@ namespace UiGen
 
             var result = (layoutLines, yml.ToString());
             return result;
-        }
-
-        //-----------------------------------------
-        private Definition ParseYaml(String yml)
-        {
-            var deserialiser = new Deserializer();
-            var input = new StringReader(yml);
-            var defn = deserialiser.Deserialize<Definition>(input);
-            return defn;
         }
 
         //--------------------------------------------------------------------------

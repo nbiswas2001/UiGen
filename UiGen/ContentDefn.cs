@@ -11,8 +11,8 @@ namespace UiGen
         public string type;
         public string defn;
 
-        private Dictionary<String, object> _data;
-        public Dictionary<String, object> data
+        private Dictionary<string, object> _data;
+        public Dictionary<string, object> data
         {
             get
             {
