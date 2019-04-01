@@ -8,7 +8,8 @@ namespace UiGen
     class Container
     {
         public List<Container> children = new List<Container>();
-        public List<String> contentIds;
+        public string id;
+        public List<string> contentIds = new List<string>();
         public ContainerType type = ContainerType.Row;
         public List<ColWidthMarker> colWidthMarkers;
         public Container parent;
@@ -50,12 +51,16 @@ namespace UiGen
         {
             var result = "";
             var contentStringBuilder = new StringBuilder();
+
+            //If content (leaf) container
             if (type == ContainerType.Content)
             {
                 if (contentIds == null) return "";
 
+                //for each content id
                 foreach(var contentId in contentIds)
                 {
+                    //render the content and append to the output string
                     if (ctx.contentsMap.ContainsKey(contentId))
                     {
                         var cDef = ctx.contentsMap[contentId];
@@ -67,9 +72,14 @@ namespace UiGen
             }
             else 
             {
-                if(type == ContainerType.Row)
+                //Load global style for containers
+                var n = type.ToString().ToLower();
+                var hash = Hash.FromDictionary(ctx.globalStyles.stylesData[n]);
+
+                //Calculate the width of the last column in Row
+                if (type == ContainerType.Row)
                 {
-                    //calculate the width of the last column
+                    
                     var totalWidth = 0;
                     var colCount = children.Count;
                     var widthPresent = false;
@@ -93,10 +103,17 @@ namespace UiGen
                         }
                     }
                 }
+                //Else if Col container containing Content container
+                else if(id!=null && ctx.containerMap.ContainsKey(id))
+                {
+                    //overwrite global styles if specific style present in defn
+                    var containerStyle = ctx.containerMap[id];
+                    foreach(var k in containerStyle.data.Keys)
+                    {
+                        hash[k] = containerStyle.data[k];
+                    }
+                }
 
-                //Load template args
-                var n = type.ToString().ToLower();
-                var hash = Hash.FromDictionary(ctx.globalStyles.stylesData[n]);
 
                 //Render the content for children and add it to template args
                 var cSB = new StringBuilder();

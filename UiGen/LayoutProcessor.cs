@@ -86,7 +86,8 @@ namespace UiGen
             { 
                 var contentCont = container.CreateChild(-1); //-1 -> type=Content
                 var g = scanBy == ROW ? grid : Transpose(grid);
-                contentCont.contentIds = GetContentIds(g);
+
+                SetContentIds(g, contentCont);
             }
         }
 
@@ -173,11 +174,10 @@ namespace UiGen
             return result;
         }
 
-        //--------------------------------------------
+        //------------------------------------------------------------------
         //Gets a one (or more) contentIds in the grid
-        private List<String> GetContentIds(char[,] grid)
+        private void SetContentIds(char[,] grid, Container contentCont)
         {
-            var result = new List<String>();
             int rows = grid.GetLength(0);
             int cols = grid.GetLength(1);
             var lineBuilder = new StringBuilder();
@@ -185,15 +185,16 @@ namespace UiGen
             {
                 for (int j = 0; j < cols; j++)
                     if (grid[i, j] != ' ') lineBuilder.Append(grid[i, j]);
-                var line = lineBuilder.ToString();
-                if (line != "")
-                {
-                    var idArr = line.Split(',');
-                    foreach (var id in idArr) result.Add(id);
-                    lineBuilder = new StringBuilder();
-                }
             }
-            return result;
+            var line = lineBuilder.ToString();
+
+            //Line would be of format ContainerId:ContentId1,ContentId2,... 
+            var x = line.Split(":");
+            var idArr = x[1].Split(",");
+
+            contentCont.parent.id = x[0].Trim();
+            foreach(var id in idArr) if(id.Trim()!="") contentCont.contentIds.Add(id.Trim());
+           
         }
 
         //----------------------------------

@@ -6,7 +6,8 @@ namespace UiGen
     {
         static void Main(string[] args)
         {
-            var rootFolder = @"C:\Dev\Code\MyProjects\NET\UiGen\Defn";
+
+            var rootFolder = @"C:\Dev\Code\UiGen\Defn";
             var reader = new DefinitionReader();
             var def = reader.ReadDefnFromFile(rootFolder+@"\b.txt");
 

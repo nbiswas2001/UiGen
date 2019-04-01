@@ -132,6 +132,7 @@ namespace UiGen
         }
 
         //----------------------------------------------------------------
+        //Read the 'defn' field data which is of the format key1=val1; key2=val2 etc. 
         public static Dictionary<String, object> ReadData(String dataTxt)
         {
             var data = new Dictionary<string, object>();
@@ -142,7 +143,7 @@ namespace UiGen
                 var key = s2[0].Trim();
                 var valTxt = s2[1].Trim();
 
-                //if array
+                //if array e.g. cols=[A, B, C]
                 if (valTxt.StartsWith('[') && valTxt.EndsWith(']'))
                 {
                     var arrTxt = valTxt.Substring(1, valTxt.Length - 2);
@@ -153,6 +154,8 @@ namespace UiGen
                 }
                 else data.Add(key, valTxt);
             }
+
+            //So that these angular tags can be included in templates
             data.Add("oTag1", "{{");
             data.Add("cTag1", "}}");
             data.Add("oTag2", "{%");

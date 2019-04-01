@@ -14,7 +14,8 @@ namespace UiGen
             defn.rootContainer.Print();
 
             //Load elements into a map
-            foreach(var cDef in defn.contents) ctx.contentsMap.Add(cDef.id, cDef);
+            foreach(var c in defn.contents) ctx.contentsMap.Add(c.id, c);
+            foreach (var c in defn.containers) ctx.containerMap.Add(c.id, c);
 
             //Attach elements to the content containers
             var text = defn.rootContainer.Render(ctx);
