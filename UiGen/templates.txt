@@ -13,10 +13,10 @@
 	{{content}}
 </div>
 
-### field 
+### input-text 
 <div class="form-group">
     <label>{{label}}</label>
-    <input type="text" class="form-control {{style}}" name="{{name}}" [(ngModel)]="{{model}}" />
+    <input type="text" name="{{name}}" [(ngModel)]="{{model}}" class="form-control {{style}}"/>
 </div>
 
 ### text 
@@ -28,16 +28,27 @@
 <table class="table table-sm table-hover">  
     <thead class="thead-dark">
     <tr>
-		{% for col in columns %}
-        <th>{{col}}</th>
+		{% for colLabel in columnLabels %}
+        <th>{{colLabel}}</th>
 		{% endfor %}
     </tr>
     </thead>
-    <tbody *ngIf="{{collectionModel}} != null">
-		<tr *ngFor="let {{itemName}} of {{collectionModel}}; let idx = index;" (click)="{{itemName}}RowClick(idx)"> 
-			{% for cm in columnModels %}
-			<td>{{oTag1}}{{itemName}}.{{cm}}{{cTag1}}</td>
+    <tbody *ngIf="{{collection}} != null">
+		<tr *ngFor="let {{item}} of {{collection}}; let idx = index;" (click)="{{item}}RowClick(idx)"> 
+			{% for colVal in columnValues %}
+			<td>{{tO}}{{item}}.{{colVal}}{{tC}}</td>
 			{% endfor %}
 		</tr>
     </tbody>
 </table>
+
+### select
+<div class="form-group">
+    <label>{{label}}</label>
+	<select class="form-control" [(ngModel)]="{{model}}" name="{{name}}">
+          <option *ngFor="let opt of {{collection}}" [ngValue]="opt">{{tO}}opt{{tC}}</option>
+	</select>
+</div>
+
+### button
+<button class="btn {{style}}" (click)="{{action}}">{{text}}</button>

@@ -9,12 +9,12 @@ namespace UiGen
 
             var rootFolder = @"C:\Dev\Code\UiGen\Defn";
             var reader = new DefinitionReader();
-            var def = reader.ReadDefnFromFile(rootFolder+@"\b.txt");
+            var def = reader.ReadDefnFromFile(rootFolder+ @"\app.component.txt");
 
 
             var generator = new Generator();
             var ctx = new GeneratorContext();
-            ctx.outPath = rootFolder+@"\output";
+            ctx.outPath = rootFolder+ @"\sample-ui\src\app";
             ctx.fileExt = ".html";
             ctx.globalStyles = reader.LoadGlobalStylesFromFile("global-styles.txt");
 

@@ -1,32 +1,36 @@
 
 
 -----------4-----------------------
-|  A: F1   |     B:  F2,F3        |         
+|  A: F1   |     B:  F2,F3, F4    |         
 |          |                      |
 -----------------------------------
-|           C: F4                 |
+|           C: F5                 |
 |                                 |
 -----------------------------------
 
 
 
 ###
-name: form1
+name: app.component
 containers:
   - id: A
     defn: style=border      
 
 contents:
   - id: F1
-    type: field 
+    type: input-text 
     defn: label=Name; name=name; model=d.name
   - id: F2
-    type: field 
+    type: input-text
     defn: label=Age; name=age; model=d.age
   - id: F3
     type: text 
     defn: html=<p>Some random text<p>; style=xxx
   - id: F4
+    type: input-select 
+    defn: label=Status; name=status; model=status
+          item=task; collection=statuses  
+  - id: F5
     type: table 
-    defn: columns=[Name,Age,Height,Sex]; itemName=task; 
-          columnModels=[name,age,height,sex]; collectionModel=d.tasks
+    defn: columnLabels=[Name,Age,Height,Sex]; item=task; 
+          columnValues=[name,age,height,sex]; collection=d.tasks

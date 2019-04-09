@@ -1,0 +1,33 @@
+
+
+-----------------------------------
+|           A: T1                 |
+|                                 |
+-----------------------------------
+|    B: IT1     |   C: S1         |
+|               |                 |
+-----------------------------------
+|           D: B1, B2             |
+|                                 |
+-----------------------------------
+
+
+###
+name: app.component
+containers:
+contents:
+  - id: T1
+    type: text 
+    defn: html=<h1>Sample</h1>
+  - id: IT1
+    type: input-text
+    defn: label=Name; name=name; model=name
+  - id: S1
+    type: select 
+    defn: label=Status; name=status; model=status; item=task; collection=statuses      
+  - id: B1
+    type: button 
+    defn: style=btn-primary mr-1; text=OK; action=onOK()
+  - id: B2
+    type: button 
+    defn: style=btn-primary; text=Cancel; action=onCancel()

@@ -189,12 +189,14 @@ namespace UiGen
             var line = lineBuilder.ToString();
 
             //Line would be of format ContainerId:ContentId1,ContentId2,... 
-            var x = line.Split(":");
-            var idArr = x[1].Split(",");
+            if (line != "")
+            {
+                var x = line.Split(":");
+                var idArr = x[1].Split(",");
 
-            contentCont.parent.id = x[0].Trim();
-            foreach(var id in idArr) if(id.Trim()!="") contentCont.contentIds.Add(id.Trim());
-           
+                contentCont.parent.id = x[0].Trim();
+                foreach (var id in idArr) if (id.Trim() != "") contentCont.contentIds.Add(id.Trim());
+            }
         }
 
         //----------------------------------

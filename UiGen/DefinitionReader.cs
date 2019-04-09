@@ -156,10 +156,8 @@ namespace UiGen
             }
 
             //So that these angular tags can be included in templates
-            data.Add("oTag1", "{{");
-            data.Add("cTag1", "}}");
-            data.Add("oTag2", "{%");
-            data.Add("cTag2", "%}");
+            data.Add("tO", "{{");
+            data.Add("tC", "}}");
 
             return data;
 
