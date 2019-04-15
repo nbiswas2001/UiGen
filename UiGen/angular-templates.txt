@@ -1,19 +1,4 @@
-﻿### root
-<div class="{{class}} {{style}}">
-	{{content}}
-</div>
-
-### row
-<div class="{{class}} {{style}}">
-	{{content}}
-</div>
-
-### column
-<div class="col-{{size}}{{width}} {{style}}">
-	{{content}}
-</div>
-
-### input-text 
+﻿### input-text 
 <div class="form-group">
     <label>{{label}}</label>
     <input type="text" name="{{name}}" [(ngModel)]="{{model}}" class="form-control {{style}}"/>

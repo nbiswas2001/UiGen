@@ -11,7 +11,6 @@
 
 
 ###
-name: app.component
 containers:
   - id: A
     defn: style=border      

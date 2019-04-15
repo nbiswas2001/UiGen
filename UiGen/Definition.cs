@@ -8,7 +8,8 @@ namespace UiGen
     class Definition
     {
         public Container rootContainer;
-        public string name;
+        public string outputFile;
+        public string testFile;
         public List<ContainerDefn> containers;
         public List<ContentDefn> contents;
     }

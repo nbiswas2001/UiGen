@@ -1,8 +1,7 @@
 ﻿using DotLiquid;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
+using System.IO;
 
 namespace UiGen
 {
@@ -22,17 +21,13 @@ namespace UiGen
 
             //remove blank lines
             text = text.Replace("\n\n", "\n");
+            File.WriteAllText(defn.outputFile, text);
 
-            System.IO.File.WriteAllText(ctx.outPath+"\\"+defn.name+ctx.fileExt, text);
-
-            //Write test file
-            var testFilename = ctx.outPath + "\\" + defn.name + ".test" + ctx.fileExt;
-            WriteTestFile(text, testFilename);
-
+            if (defn.testFile != null) WriteTestFile(defn.testFile, text);
         }
 
         //-----------------------------------------------------------
-        private void WriteTestFile(String text, String filename)
+        private void WriteTestFile(String filename, String text)
         {
             var testLines = new List<string>();
             string s1 = @"
@@ -48,7 +43,7 @@ namespace UiGen
             testLines.Add(s1);
             testLines.Add(text);
             testLines.Add("</body></html>");
-            System.IO.File.WriteAllLines(filename, testLines);
+            File.WriteAllLines(filename, testLines);
         }
 
 }
@@ -56,8 +51,6 @@ namespace UiGen
     //==============================
     class GeneratorContext
     {
-        public string outPath;
-        public string fileExt;
         public Dictionary<string, Template> templatesMap = new Dictionary<string, Template>();
         public Dictionary<string, ContentDefn> contentsMap = new Dictionary<string, ContentDefn>();
         public Dictionary<string, ContainerDefn> containerMap = new Dictionary<string, ContainerDefn>();

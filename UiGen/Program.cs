@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using YamlDotNet.Serialization;
 
 namespace UiGen
 {
@@ -6,24 +9,43 @@ namespace UiGen
     {
         static void Main(string[] args)
         {
+            string settingsTxt = File.ReadAllText("settings.yml");
+            var deserialiser = new Deserializer();
+            var settings = deserialiser.Deserialize<Settings>(settingsTxt);
 
-            var rootFolder = @"C:\Dev\Code\UiGen\Defn";
+
             var reader = new DefinitionReader();
-            var def = reader.ReadDefnFromFile(rootFolder+ @"\app.component.txt");
-
-
             var generator = new Generator();
             var ctx = new GeneratorContext();
-            ctx.outPath = rootFolder+ @"\sample-ui\src\app";
-            ctx.fileExt = ".html";
             ctx.globalStyles = reader.LoadGlobalStylesFromFile("global-styles.txt");
+            reader.LoadTemplatesFromFile("global-templates.txt", ctx.templatesMap);
+            reader.LoadTemplatesFromFile(settings.framework + "-templates.txt", ctx.templatesMap);
 
-            reader.LoadTemplatesFromFile("templates.txt", ctx.templatesMap);
-            generator.ProcessDefn(def, ctx);
+
+            var defFiles = new List<string>();
+            LoadDefFiles(settings.rootDefinitionFolder, defFiles);
+
+
+            foreach (var df in defFiles)
+            {
+                var def = reader.ReadDefnFromFile(df);
+                if (def.outputFile == null)
+                {
+                    def.outputFile = df.Replace(settings.rootDefinitionFolder, settings.rootOutputFolder).Replace(".txt", settings.outputExt);
+                }
+                generator.ProcessDefn(def, ctx);
+            }
 
             Console.WriteLine("Done!");
         }
 
+
+        //---------------------------------------------------------
+        static void LoadDefFiles(string sDir, List<string> files)
+        {
+            foreach (string f in Directory.GetFiles(sDir)) files.Add(f);
+            foreach (string d in Directory.GetDirectories(sDir)) LoadDefFiles(d, files);
+        }
 
     }
 }

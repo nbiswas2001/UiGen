@@ -1,0 +1,4 @@
+﻿rootDefinitionFolder: C:\Dev\Code\UiGen\Defn
+rootOutputFolder: C:\Dev\Code\UiGen\sample-ui\src\app
+framework: angular
+outputExt: .html
